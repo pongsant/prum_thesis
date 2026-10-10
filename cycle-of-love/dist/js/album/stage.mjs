@@ -135,7 +135,7 @@ export class AlbumStage {
   }
   disposeGroup(group){group.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){o.material.map?.dispose();o.material.dispose();}});}
   setPreview(index){this.preview=index;this.movieState='selection';this.lyric='';this.loadMedia(null);}
-  setPlayback({track,line,time,energy,state}){this.preview=track;this.lyric=line;this.time=time;this.energy=energy;this.movieState=state;}
+  setPlayback({track,line,cue,time,energy,state}){this.cue=cue;this.preview=track;this.lyric=line;this.time=time;this.energy=energy;this.movieState=state;}
   loadMedia(config){
     this.mediaVersion=(this.mediaVersion||0)+1;const version=this.mediaVersion;
     if(this.media?.tagName==='VIDEO'){this.media.pause();this.media.removeAttribute('src');this.media.load();}this.media=null;
@@ -160,23 +160,55 @@ export class AlbumStage {
     this.canvas.style.cursor=index>=0||caseHit?'pointer':'default';
     if(click){if(index>=0)this.onSelect(index);else if(caseHit)this.onOpen();}
   }
+  drawMemory(c,w,h,now,theme){
+    // A moving-window study: distant hills, soft city lights and passing glass.
+    // Uses the audio clock during playback, so pausing/seeking also stops/seeks it.
+    const time=this.motion.matches?0:this.movieState==='selection'?now/1000:(this.time||0);
+    const pulse=this.motion.matches?0:Math.min(.4,this.energy);
+    c.save();
+    const sky=c.createLinearGradient(0,0,0,h);sky.addColorStop(0,'#17282e');sky.addColorStop(.6,theme.background);sky.addColorStop(1,'#152523');c.fillStyle=sky;c.fillRect(0,0,w,h);
+    c.filter='blur(22px)';
+    for(let layer=0;layer<3;layer++){
+      c.beginPath();c.moveTo(0,h);for(let x=0;x<=w+20;x+=20){const y=h*(.57+layer*.11)+Math.sin(x/w*5+time*.065+layer)*h*.07+Math.sin(x/w*11+layer*3)*h*.025;c.lineTo(x,y);}c.lineTo(w,h);c.closePath();c.fillStyle=['#a3b8b13a','#31474e99','#11262ccc'][layer];c.fill();
+    }
+    c.globalCompositeOperation='screen';
+    for(let i=0;i<12;i++){
+      const x=((i*.137+time*(.007+i%3*.004))%1.3-.15)*w;
+      const y=h*(.24+.43*(.5+.5*Math.sin(i*6.13)));
+      const radius=w*(.012+(i%3)*.012)+pulse*w*.025;
+      const glow=c.createRadialGradient(x,y,0,x,y,radius*2.7);glow.addColorStop(0,i%4===0?'#dcc5a17a':'#a7ced366');glow.addColorStop(.35,i%4===0?'#dcc5a132':'#a7ced329');glow.addColorStop(1,'#a7ced300');c.fillStyle=glow;c.fillRect(x-radius*2.7,y-radius*2.7,radius*5.4,radius*5.4);
+    }
+    c.filter='blur(5px)';c.fillStyle='#d9eeee0c';
+    const frame=((time*.027)%1.6-.3)*w;c.fillRect(frame,0,w*.025,h);c.fillRect(frame+w*.48,0,w*.006,h);
+    c.restore();
+    const shade=c.createRadialGradient(w*.5,h*.48,w*.03,w*.5,h*.48,w*.68);shade.addColorStop(0,'#07121355');shade.addColorStop(1,'#050e1866');c.fillStyle=shade;c.fillRect(0,0,w,h);
+  }
   drawTV(now){
     const c=this.screenCanvas.getContext('2d'),w=this.screenCanvas.width,h=this.screenCanvas.height,t=this.tracks[this.preview];
     const state=this.movieState;const off=state==='ejecting';
     c.fillStyle='#15201d';c.fillRect(0,0,w,h);
     const breath=this.motion.matches?0:Math.sin(now*.00027)*.018+this.energy*.07;
     const g=c.createRadialGradient(w*.5,h*.45,10,w*.5,h*.45,w*.7);g.addColorStop(0,t.visualTheme.background);g.addColorStop(1,'#293331');c.globalAlpha=state==='selection'?.6:.85+breath;c.fillStyle=g;c.fillRect(0,0,w,h);c.globalAlpha=1;
+    if(!this.media)this.drawMemory(c,w,h,now,t.visualTheme);
     if(this.media && (this.media.tagName==='IMG'?this.media.complete&&this.media.naturalWidth:this.media.readyState>=2)){
       const mw=this.media.videoWidth||this.media.naturalWidth,mh=this.media.videoHeight||this.media.naturalHeight;
       const scale=Math.max(w/mw,h/mh);c.drawImage(this.media,(w-mw*scale)/2,(h-mh*scale)/2,mw*scale,mh*scale);c.fillStyle='#101a1622';c.fillRect(0,0,w,h);
     }
-    const text=state==='selection'?t.title:state==='inserting'?'READING DISC':t.status!=='available'?'COMING SOON':this.lyric||t.visualTheme.idleText;
+    const text=state==='selection'?t.title:state==='inserting'?'READING DISC':t.status!=='available'?'COMING SOON':this.lyric||(t.instrumental?t.visualTheme.idleText:'');
     if(text!==this.lastText){this.lastText=text;this.textStart=now;}
-    const fade=this.motion.matches?1:Math.min(1,(now-this.textStart)/650);
+    const fade=this.motion.matches?1:Math.min(1,(now-this.textStart)/180);
     const showWords=!this.media||t.movie?.showLyrics!==false||state==='selection';
-    if(showWords){c.save();c.globalAlpha=fade;c.filter=`blur(${(1-fade)*5}px)`;c.fillStyle=t.visualTheme.ink;c.textAlign='center';c.textBaseline='middle';c.font='44px Arial';
-      const words=text.split(' '),lines=[];let line='';for(const word of words){const next=line?line+' '+word:word;if(c.measureText(next).width>w*.8&&line){lines.push(line);line=word;}else line=next;}lines.push(line);
-      lines.forEach((line,i)=>c.fillText(line,w/2,h/2+(i-(lines.length-1)/2)*58));c.restore();}
+    if(showWords){
+      c.save();c.globalAlpha=fade;c.filter=`blur(${(1-fade)*3}px)`;c.textAlign='left';c.textBaseline='middle';c.font='44px Arial';c.shadowColor='#061113';c.shadowBlur=12;
+      const timed=state==='playing'&&this.cue?.words?.length;
+      const words=timed?this.cue.words:text.split(/\s+/).map(word=>({text:word}));
+      const lines=[];let row=[],width=0;const space=c.measureText(' ').width;
+      for(const word of words){const size=c.measureText(word.text).width;if(row.length&&width+space+size>w*.8){lines.push({words:row,width});row=[];width=0;}if(row.length)width+=space;row.push({...word,size});width+=size;}
+      if(row.length)lines.push({words:row,width});
+      lines.forEach((row,i)=>{let x=(w-row.width)/2;const y=h/2+(i-(lines.length-1)/2)*60;
+        row.words.forEach(word=>{const sung=!timed||this.time>=word.time;const active=timed&&this.time>=word.time&&this.time<word.end;c.globalAlpha=fade*(sung?1:.4);c.fillStyle=active?'#ffffff':t.visualTheme.ink;c.fillText(word.text,x,y);x+=word.size+space;});
+      });c.restore();
+    }
     c.fillStyle=t.visualTheme.ink;c.globalAlpha=.55;c.font='17px monospace';c.textAlign='left';c.fillText(`${t.number} / ${t.title}`,w*.065,64);c.textAlign='right';c.fillText(state==='selection'?'PREVIEW':state==='playing'?'PLAY':'MEMORY',w*.935,64);
     c.textAlign='center';c.font='14px Arial';c.fillText(state==='selection'?'INSERT A DISC TO BEGIN':`${this.project.title.toUpperCase()} / ORIGINAL RECORDINGS`,w/2,659);c.globalAlpha=1;
     c.fillStyle='#101510';c.globalAlpha=.055;for(let y=0;y<h;y+=4)c.fillRect(0,y,w,1);c.globalAlpha=1;

@@ -105,7 +105,7 @@ function updatePlayer(){
   if($('track-lyric').textContent!==words){text('track-lyric',words);$('track-lyric').classList.remove('lyric-arrives');void $('track-lyric').offsetWidth;$('track-lyric').classList.add('lyric-arrives');}
   $('track-lyric').classList.toggle('emphasis',!!cue?.emphasis);
   const subtitle=route.page==='movie'&&movieState==='playing'?(available(t)?cue?.text||'':'COMING SOON'):'';text('movie-accessible-lyric',subtitle);
-  if(stage&&route.page==='movie')stage.setPlayback({track:movieState==='selection'?preview:current,line:cue?.text||'',time,energy:0,state:movieState});
+  if(stage&&route.page==='movie')stage.setPlayback({track:movieState==='selection'?preview:current,line:cue?.text||'',cue,time,energy:0,state:movieState});
   if(route.page==='movie')text('tv-fallback-screen',movieState==='selection'?tracks[preview].title:!available(t)?'COMING SOON':cue?.text||t.visualTheme.idleText);
 }
 
@@ -136,6 +136,6 @@ import('./stage.mjs').then(({AlbumStage})=>{
 function react(){
   requestAnimationFrame(react);if(!stage||route.page!=='movie'||document.hidden)return;
   const t=tracks[current],cue=lyricAt(t,audio.currentTime,audio.duration||Infinity),levels=player.levels();
-  stage.setPlayback({track:movieState==='selection'?preview:current,line:cue?.text||'',time:audio.currentTime,energy:movieState==='playing'?levels.amplitude+levels.bass*.1:0,state:movieState});
+  stage.setPlayback({track:movieState==='selection'?preview:current,line:cue?.text||'',cue,time:audio.currentTime,energy:movieState==='playing'?levels.amplitude+levels.bass*.1:0,state:movieState});
 }
 requestAnimationFrame(react);

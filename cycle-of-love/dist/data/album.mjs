@@ -49,7 +49,7 @@ export const tracks = [
   }
 ],
    lyrics:window.SELF_LYRICS,instrumental:false,movie:null,
-   timingNote:'Lyric timings are a draft and will be refined against the final vocal.',
+   timingNote:'Lyrics timed to this recording with local word alignment; fine adjustments may still be needed.',
    visualTheme:{background:'#61737e',ink:'#e3e9e7',accent:'#afc0c4',idleText:'The person I’m becoming.'}},
   {id:'family',number:'03',title:'FAMILY',status:'coming-soon',discLabel:'FAMILY',
    audio:null,duration:null,cover:null,
