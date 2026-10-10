@@ -40,6 +40,13 @@ function previewMovie(i){
 function renderTrack(index){
   const t=tracks[index];load(index);text('track-status',available(t)?'AVAILABLE TO LISTEN':'COMING SOON');text('track-number',`TRACK ${t.number}`);text('art-number',t.number);text('track-title',t.title);text('track-description',t.description);text('track-concept',t.concept);text('timing-note',t.timingNote||'');text('track-count',`${t.number} / 05`);
   $('track-player').hidden=!available(t);$('track-unavailable').hidden=available(t);$('track-movie').href=`#movie/${t.id}`;
+  $('full-lyrics').hidden=!t.lyricSections?.length;
+  text('full-lyrics-heading',`${t.title} / LYRICS`);
+  $('lyric-sections').replaceChildren();
+  for(const part of t.lyricSections||[]){
+    const section=document.createElement('section'),heading=document.createElement('h3'),words=document.createElement('p');
+    heading.textContent=part.title;words.textContent=part.text;section.append(heading,words);$('lyric-sections').append(section);
+  }
   artwork($('track-cover'),t);
   const prev=tracks[(index+4)%5],next=tracks[(index+1)%5];$('previous-track').href=`#track/${prev.id}`;$('next-track').href=`#track/${next.id}`;text('previous-track',`← ${prev.number} / ${prev.title}`);text('next-track',`${next.number} / ${next.title} →`);
   if(stage)stage.setTrack(index);else{$('track-stage').replaceChildren();const img=document.createElement('img');img.src=thumbs[index];img.alt=t.discLabel;$('track-stage').append(img);}

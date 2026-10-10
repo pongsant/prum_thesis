@@ -55,3 +55,10 @@ body[data-page=movie] .movie-disc img{width:32px;height:32px}
 body[data-page=movie] .movie-disc strong{font-size:7px}
 body[data-page=movie] .movie-disc small{font-size:5px}
 @media(max-width:800px){body[data-page=movie] #movie-discs{left:5%;width:90%;top:6px}body[data-page=movie] .movie-disc img{width:28px;height:28px}}
+
+.full-lyrics{border-top:1px solid var(--line);padding:45px 4% 60px}
+.full-lyrics>h2{font-size:10px;font-weight:400;letter-spacing:.14em;color:var(--muted);margin-bottom:32px}
+#lyric-sections{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:10%;row-gap:42px}
+#lyric-sections h3{font-size:10px;font-weight:400;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 16px}
+#lyric-sections p{white-space:pre-line;font-size:clamp(14px,1.2vw,18px);line-height:1.9;overflow-wrap:break-word}
+@media(max-width:650px){.full-lyrics{padding:30px 0 40px}#lyric-sections{grid-template-columns:1fr;row-gap:30px}}

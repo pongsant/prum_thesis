@@ -30,6 +30,24 @@ export const tracks = [
    audio:'audio/self.m4a',duration:196,cover:null,
    description:'A song about identity, growth, dreams, and looking back at myself.',
    concept:'The person I was. The person I’m becoming.',
+   lyricSections:[
+  {
+    "title": "Verse 1",
+    "text": "I don’t miss who I was\nBut I think about him sometimes\nThat kid had no idea\nWhat was waiting down the line\nI thought I needed more\nBut maybe I\nalready had enough\nNow I’m just tryna live my life"
+  },
+  {
+    "title": "Hook",
+    "text": "Before I run out of time\nBefore I lose all of my mind\nBefore I leave this life behind\nBefore i have to say goodbye\nI know where I gotta go\nThough the road feels dam so cold\nI been chasing after dreams\nWondering what they really mean"
+  },
+  {
+    "title": "Verse 2",
+    "text": "Still got places I wanna see\nWanna watch the sunrise by the sea\nTake a train through the cities\nFind a place that feels like home\nMaybe one day I’ll fall in love\nAnd Meet someone that I dream of\nWrite some songs that people can sing along\nAnd build a life from all these dreams\nThere’s still so much\nthings left\nfor me to see"
+  },
+  {
+    "title": "Bridge",
+    "text": "What they really mean to me\nI ask myself quietly\nBeen searching in so many places\nFor something right\nin front of me\nMaybe all these\nhighs and lows Were\nnever meant to set me free\nI know my destination See"
+  }
+],
    lyrics:window.SELF_LYRICS,instrumental:false,movie:null,
    timingNote:'Lyric timings are a draft and will be refined against the final vocal.',
    visualTheme:{background:'#61737e',ink:'#e3e9e7',accent:'#afc0c4',idleText:'The person I’m becoming.'}},
