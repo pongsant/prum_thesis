@@ -14,10 +14,11 @@ class Atmosphere {
   setSong(song) {this.target=song.glow;}
   draw(now) {
     requestAnimationFrame(t=>this.draw(t));
-    if(document.hidden || now-this.last<33) return;
+    if(document.hidden || document.body.classList.contains('world-ready') || now-this.last<33) return;
     this.last=now; if(!this.reduced.matches)this.time+=.008;
     const c=this.ctx,w=this.w,h=this.h,t=this.time;
     const levels=this.player.levels();this.energy+=(levels.amplitude*.9+levels.bass*.16-this.energy)*.045;
+    document.documentElement.style.setProperty('--energy',this.reduced.matches?0:this.energy.toFixed(3));
     this.color=this.color.map((v,i)=>v+(this.target[i]-v)*.024);
     const rgb=this.color.map(Math.round).join(',');
     c.fillStyle='#090b0e';c.fillRect(0,0,w,h);

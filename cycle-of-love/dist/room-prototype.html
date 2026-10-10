@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0c10">
+  <meta name="description" content="An audiovisual journey through love, memory, and the selves we become. An original music thesis by Prum.">
+  <title>Cycle of Love — An audiovisual EP</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%230a0c10'/%3E%3Cpath d='M25 17a9 9 0 1 1-9-10 6 6 0 1 1-6 6 3 3 0 1 1 3 3' fill='none' stroke='%23e1dbce' stroke-width='1.5'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/world.css">
+  <script defer src="data/lyrics.js"></script><script defer src="data/songs.js"></script>
+  <script defer src="data/rooms.js"></script><script defer src="js/audio.js"></script><script defer src="js/visuals.js"></script><script defer src="js/app.js"></script>
+</head>
+<body data-space="intro">
+  <canvas id="world" tabindex="0" aria-label="Walkable memory archive. WASD to walk, drag to look, E to inspect nearby objects. Escape releases mouse look."></canvas>
+  <canvas id="atmosphere" aria-hidden="true"></canvas>
+  <div id="background-media" aria-hidden="true"></div>
+  <div class="architecture" aria-hidden="true"><div class="ceiling"></div><div class="back-wall"></div><div class="floor"></div><div class="light-seam"></div></div>
+  <div class="grain" aria-hidden="true"></div><div id="dissolve" aria-hidden="true"></div>
+  <header><button id="home" aria-label="Return to introduction">CYCLE OF LOVE <span> / MEMORY ARCHIVE</span></button><button id="about">[ ABOUT ]</button></header>
+  <main>
+    <section id="landing" aria-labelledby="landing-title">
+      <div class="coordinates">ARCHIVE / 001<br>LOVE · MEMORY · CHANGE</div>
+      <div class="intro-copy"><p class="eyebrow">AN AUDIOVISUAL EXPERIENCE BY PRUM</p><h1 id="landing-title">CYCLE<br>OF LOVE<span class="title-star">✳</span></h1><p class="intro-caption">We return to ourselves.<br>Never quite the same.</p><button id="enter" class="enter-button">[ ENTER ] <span>BEGIN EXPERIENCE ↗</span></button></div>
+      <div class="distant-door" aria-hidden="true"><div></div></div>
+      <p class="intro-side">A PLACE BETWEEN<br>WHAT WAS & WHAT WILL BE</p>
+    </section>
+    <section id="hallway" aria-labelledby="hall-title" hidden>
+      <div class="space-heading"><p class="eyebrow">CONNECTED MEMORIES / 02 SPACES</p><h1 id="hall-title" tabindex="-1">Stay a little.<br>Choose a memory.</h1></div>
+      <nav id="doors" aria-label="Memory room entrances"></nav>
+      <div class="hall-caption"><span id="door-description"></span><span>← → SELECT &nbsp; / &nbsp; ENTER TO APPROACH</span></div>
+    </section>
+    <section id="experience" aria-labelledby="song-title" hidden>
+      <div class="space-heading"><p id="chapter-label" class="eyebrow"></p><h1 id="song-title" tabindex="-1"></h1><p id="song-subtitle"></p></div>
+      <div class="room-installation"><div class="wall-screen"><div id="screen-media"></div><div class="screen-landscape" aria-hidden="true"></div><span>MEMORY IN MOTION <i>↗</i></span></div><div id="objects"></div></div>
+      <div class="lyric-stage"><p id="lyric-section" class="eyebrow"></p><p id="lyric" aria-live="off"></p><p id="instrumental-note">Before the words.<br><span>Just listen.</span></p></div>
+      <div class="room-bottom"><div class="player"><button id="play" aria-label="Play">[ PLAY ]</button><div class="track"><div class="player-meta"><span id="play-state">READY WHEN YOU ARE</span><span><span id="current-time">0:00</span> / <span id="duration">0:00</span></span></div><input id="progress" type="range" min="0" max="100" step="0.1" value="0" aria-label="Song progress"></div><button id="mute" aria-label="Mute" aria-pressed="false">SOUND ON</button></div><div class="room-notes"><button id="song-info">[ ROOM NOTES + ]</button><button id="lyrics-toggle" aria-pressed="true">LYRICS ON</button><span id="chapter-mood"></span></div></div>
+    </section>
+  </main>
+  <footer><button id="back" hidden>[ ESC / BACK ]</button><span id="location">00 / ARRIVAL</span><span class="footer-message">EVERY EXPERIENCE LEAVES SOMETHING.</span><span class="archive-mark">© PRUM / WORK IN PROGRESS</span></footer>
+  <aside id="walk-controls" aria-label="Walking controls" hidden>
+    <div class="walk-toolbar"><span id="walk-state">WASD WALK / DRAG TO LOOK</span><button id="mouse-look">[ MOUSE LOOK ]</button><button id="walk-help">[ CONTROLS ? ]</button></div>
+    <div id="crosshair" aria-hidden="true">+</div>
+    <button id="interact" hidden></button>
+    <div class="touch-pad" aria-label="Touch movement controls"><button data-move="KeyW" aria-label="Walk forward">↑</button><button data-move="KeyA" aria-label="Walk left">←</button><button data-move="KeyS" aria-label="Walk backward">↓</button><button data-move="KeyD" aria-label="Walk right">→</button><span>HOLD TO WALK · DRAG SCENE TO LOOK</span></div>
+  </aside>
+  <p id="status" role="status" hidden></p>
+  <dialog id="info-dialog"><button id="close-info" aria-label="Close information">[ CLOSE × ]</button><p id="info-kicker" class="eyebrow"></p><h2 id="info-title"></h2><div id="info-body"></div><p class="eyebrow">LOVE · MEMORY · CHANGE</p></dialog>
+  <audio id="audio" preload="metadata"></audio><audio id="ambient" preload="none" loop></audio>
+  <noscript>Please enable JavaScript to enter this music experience.</noscript>
+</body></html>

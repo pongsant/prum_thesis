@@ -1,27 +1,47 @@
-# Cycle of Love
+# Cycle of Love — interactive album
 
-An audiovisual EP exhibition. Open `dist/index.html` directly, or run `python3 serve.py` from this folder and visit http://localhost:4173.
+A complete buildless HTML/CSS/JavaScript prototype with a real Three.js jewel case, five selectable CD-R discs, reusable track pages, a CRT visual player, and About page.
 
-## Structure
+## Run locally
 
-- `dist/index.html` — landing, chapter navigation, playback and information panel.
-- `dist/styles/main.css` — layout, type, transitions and mobile styles.
-- `dist/data/songs.js` — change titles, audio paths, descriptions, palettes and background media here.
-- `dist/data/lyrics.js` — SELF lyrics, with editable start/end times in seconds. Initial timings are a draft, not verified vocal alignment.
-- `dist/js/audio.js` — one audio player and Web Audio analyser.
-- `dist/js/visuals.js` — lightweight atmospheric canvas; replace or extend for WebGL.
-- `dist/js/app.js` — chapter changes, controls, timed lyrics and information.
-- `dist/audio/` — listening copies of your original WAV recordings.
-- `dist/media/` — add your TouchDesigner exports and photographs here.
+Run `python3 serve.py` here and open http://localhost:4173. Use HTTP rather than opening HTML directly. No npm install or build step is required; Three.js and its license are included in `dist/vendor/`.
 
-The original WAV recordings remain untouched outside this project. The site uses 192 kbps AAC listening copies (about 6.6 MB combined). No music starts until a visitor clicks Enter or Play. Only one track plays at a time. INTRO continues into SELF; SELF ends without jumping into an unavailable chapter.
+## Edit the project
 
-## Update the EP
+Start with **`dist/data/album.mjs`**. It contains the project title, cover title, introduction, About sections, and all five tracks. Each track defines its title, number, handwritten disc label, status, description, concept, audio path, cover path, lyrics, movie media, and visual palette.
 
-Edit `dist/data/songs.js`. For a future chapter, set `available: true`, provide its audio path and add its lyrics array. The navigation updates automatically. To rename the project, edit `PROJECT.title` in that file.
+- INTRO and SELF reuse the existing M4A recordings, unchanged.
+- FAMILY, FUTURE LOVE, and LETTING GO have complete pages and visual experiences marked coming soon. To enable one, add its audio file and change `status` to `available`.
+- Set `project.cover` or a track's `cover` to an image path, such as `images/self-cover.jpg`. Leave `null` to use generated placeholder artwork.
+- SELF references the preserved cue sheet in `dist/data/lyrics.js`. You can instead put `{ time: 12, text: 'Your lyric' }` objects directly in its `lyrics` field. Optional `end` and `emphasis` fields are supported. Times are seconds. The existing timings are drafts and need final vocal alignment.
+- INTRO is instrumental; it does not invent lyric lines.
+- Set `movie` to `{ type: 'video', src: 'video/self.mp4', loop: true, showLyrics: true }` for a silent MP4/WebM visual, or `{ type: 'image', src: 'images/self.jpg' }` for a still. Use `showLyrics: false` for a video with its own titles. Only the selected visual loads. Background video loops independently of the audio timeline.
+- All media paths are relative to `dist/`. Keep videos compressed and reasonably sized for mobile.
 
-Lyrics use `{time: 12, end: 16, text: 'Your line', section: 'Verse 1', emphasis: false}`. Times refer to the song audio, in seconds. Empty gaps show no lyric. Pausing freezes the current lyric; seeking recalculates it immediately. Review the draft SELF times against your vocal before presenting as fully synchronized.
+## Files
 
-Background media accepts `{type: 'video', src: 'media/self.webm'}` or `{type: 'image', src: 'media/photo.jpg'}`; `null` uses the atmospheric canvas. Videos loop silently, independently of the song. Use MP4 (H.264) or WebM, short loops and compressed exports. The canvas is also available below media for future custom WebGL visuals.
+| File | Purpose |
+| --- | --- |
+| `dist/index.html` | Four accessible page templates and shared audio element. |
+| `dist/data/album.mjs` | Editable project and track content. |
+| `dist/data/lyrics.js` | Preserved SELF lyric cue sheet. |
+| `dist/js/album/app.mjs` | Navigation, track controls, previews, insertion/ejection, and lyric updates. |
+| `dist/js/album/core.mjs` | Routing, time formatting, and lyric lookup. |
+| `dist/js/album/art.mjs` | Procedural silver discs and placeholder covers. |
+| `dist/js/album/stage.mjs` | Real 3D case, discs, CRT, materials, animation, and screen rendering. |
+| `dist/js/audio.js` | Preserved audio player and Web Audio analyser. |
+| `dist/styles/album.css` | Editorial layout, responsive styles, and lyric transitions. |
+| `dist/audio/` | Preserved listening copies. Original WAV files remain outside this folder. |
+| `tests/album.test.mjs` | Route, track availability, duration, and lyric boundary checks. |
 
-Keyboard: Space plays/pauses outside other controls. All chapter, playback and information controls are keyboard accessible. Reduced motion is respected. The prototype is a cinematic chapter interface, not yet a WASD 3D world.
+## Interaction
+
+Click the case or “Open the album,” then choose a disc. All tracks also have normal keyboard-accessible links. Track pages have Play/Pause, seeking, previous/next, and visual mode. In Movie mode, hovering or focusing a disc previews it silently; selecting it inserts it and starts the available recording. Eject stops audio, shuts down the CRT, and returns to selection. Navigation stops playback, and a single audio element prevents overlapping songs.
+
+Space toggles playback when focus is outside a control. Escape ejects during visual playback when focus is outside a control. Standard Enter/Space activate focused buttons. Reduced-motion preferences simplify motion and disable audio-driven animation. If WebGL is unavailable, navigation, audio, lyrics, and visual-mode controls remain functional with flat artwork.
+
+## Preservation and verification
+
+The previous walkable prototype remains at `/room-prototype.html` with its supporting source files. The new homepage does not load those scripts. The original INTRO/SELF recordings, lyrics, and audio logic were checked against their pre-rebuild checksums.
+
+Run `node --test tests/album.test.mjs`. Safari desktop checks cover case opening, track navigation, real audio playback, seeking and timed lyrics, CRT insertion, and eject. Responsive CSS includes compact phone layouts; physical-device testing is still recommended.

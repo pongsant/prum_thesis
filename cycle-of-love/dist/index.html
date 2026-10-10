@@ -2,39 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0a0c10">
-  <meta name="description" content="An audiovisual journey through love, memory, and the selves we become. An original music thesis by Prum.">
-  <title>Cycle of Love — An audiovisual EP</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%230a0c10'/%3E%3Cpath d='M25 17a9 9 0 1 1-9-10 6 6 0 1 1-6 6 3 3 0 1 1 3 3' fill='none' stroke='%23e1dbce' stroke-width='1.5'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles/main.css">
-  <script defer src="data/lyrics.js"></script><script defer src="data/songs.js"></script>
-  <script defer src="js/audio.js"></script><script defer src="js/visuals.js"></script><script defer src="js/app.js"></script>
+  <meta name="theme-color" content="#eeede8"><meta name="description" content="Cycle of Love. Five chapters of original music, memory and change by Prum. An interactive album and visual listening experience.">
+  <title>Cycle of Love — Prum</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23c5c8c3'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%23eeede8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles/album.css">
+  <script defer src="data/lyrics.js"></script><script defer src="js/audio.js"></script>
+  <script type="module" src="js/album/app.mjs"></script>
 </head>
-<body>
-  <canvas id="atmosphere" aria-hidden="true"></canvas>
-  <div id="background-media" aria-hidden="true"></div><div class="vignette" aria-hidden="true"></div><div class="grain" aria-hidden="true"></div>
-  <header class="masthead"><button id="home" class="wordmark" aria-label="Return to introduction">CYCLE OF LOVE<span>AN AUDIOVISUAL EP</span></button><button id="about" class="quiet-button">About the project <span class="small-plus" aria-hidden="true">+</span></button></header>
-  <main>
-    <section id="landing" class="landing" aria-labelledby="landing-title">
-      <div class="landing-meta"><span>LOVE, IN FIVE CHAPTERS</span><span>AN EXPLORATION BY PRUM</span></div>
-      <div class="landing-heading"><p class="eyebrow">WE RETURN TO OURSELVES.</p><h1 id="landing-title">Cycle of <em>love.</em></h1><p class="landing-caption">Never quite the same.</p></div>
-      <div class="enter-block"><button id="enter" class="enter-button"><span class="play-triangle" aria-hidden="true"></span> ENTER THE EXPERIENCE</button><p>Take a moment. Put on your headphones.</p></div>
-      <div class="landing-footer"><span>ORIGINAL MUSIC · PERSONAL MEMORIES</span><span>01—05 <i aria-hidden="true"></i> A WORK IN PROGRESS</span></div>
+<body data-page="album">
+  <div class="paper-grain" aria-hidden="true"></div>
+  <header class="masthead"><a class="wordmark" href="#album" id="wordmark">CYCLE OF LOVE<span>BY PRUM</span></a><nav aria-label="Main navigation"><a href="#album" data-nav="album">ALBUM</a><a href="#movie" data-nav="movie">MOVIE</a><a href="#about" data-nav="about">ABOUT</a></nav><span class="edition" id="edition">AN INDEPENDENT MUSIC PROJECT</span></header>
+  <main id="main">
+    <section id="album-page" class="page album-page" aria-labelledby="album-title">
+      <div class="album-intro"><p class="micro">ORIGINAL RECORDINGS / 01—05</p><h1 id="album-title">Five chapters,<br><em>one journey.</em></h1><p id="album-description"></p><div class="album-actions"><button id="open-case" class="text-button" aria-expanded="false" aria-controls="track-list">Open the album <span>↗</span></button><span class="micro" id="case-hint">CLICK THE CASE TO OPEN</span></div></div>
+      <div id="album-stage" class="stage album-stage" aria-label="Interactive jewel case and five discs"><div class="stage-fallback"><span class="fallback-case">CYCLE<br>OF LOVE</span></div></div>
+      <div class="album-caption"><span class="micro">FIVE ORIGINAL TRACKS<br>A WORK IN PROGRESS</span><div id="disc-preview"><span class="micro">THE ALBUM</span><p>A small collection of things we carry.</p></div><span class="micro object-note">CD-R / STEREO<br>HANDLE WITH CARE</span></div>
+      <nav id="track-list" class="track-list" aria-label="All five tracks"></nav>
     </section>
-    <section id="experience" class="experience" aria-labelledby="song-title" hidden>
-      <div class="chapter-top"><span id="chapter-label" class="eyebrow">PRELUDE / 00</span><button id="song-info" class="quiet-button">Behind the song <span class="small-plus" aria-hidden="true">+</span></button></div>
-      <div class="song-heading"><h1 id="song-title" tabindex="-1">INTRO</h1><p id="song-subtitle">Before the words.</p></div>
-      <div class="lyric-stage"><p id="lyric-section" class="eyebrow"></p><p id="lyric" class="lyric" aria-live="off"></p><p id="instrumental-note" class="instrumental-note">A place to begin.<br><em>Just listen.</em></p></div>
-      <div class="experience-bottom">
-        <div class="player"><button id="play" class="play-button" aria-label="Play INTRO"><span class="play-triangle" aria-hidden="true"></span></button><div class="player-track"><div class="player-meta"><span id="play-state">READY WHEN YOU ARE</span><span class="times"><span id="current-time">0:00</span><span class="time-divider">/</span><span id="duration">1:17</span></span></div><input id="progress" type="range" min="0" max="100" step="0.1" value="0" aria-label="Song progress"></div><button id="mute" class="quiet-button sound-button" aria-label="Mute" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4zM17 8a6 6 0 0 1 0 8M20 5a10 10 0 0 1 0 14"/></svg></button></div>
-        <nav id="chapters" class="chapters" aria-label="EP chapters"></nav>
-        <div class="experience-footer"><span id="chapter-mood">A MOMENT BEFORE EVERYTHING</span><button id="lyrics-toggle" class="quiet-button" aria-pressed="true">Lyrics on</button><span class="footer-note">EVERY EXPERIENCE LEAVES SOMETHING.</span></div>
-      </div>
+    <section id="track-page" class="page track-page" hidden aria-labelledby="track-title">
+      <div class="page-top"><a href="#album">← BACK TO ALBUM</a><span id="track-status" class="micro"></span></div>
+      <div class="track-layout"><div class="track-art"><div id="track-stage" class="stage track-stage"></div><img id="track-cover" class="track-cover" alt="Track cover artwork"><span class="micro art-caption">ORIGINAL RECORDING / <span id="art-number"></span></span></div><div class="track-copy"><p class="micro" id="track-number"></p><h1 id="track-title" tabindex="-1"></h1><p id="track-description" class="description"></p><p id="track-concept" class="concept"></p><div id="track-player" class="player"><button id="track-play" class="play-button">PLAY <span>▶</span></button><div class="timeline"><div class="time-row"><span id="track-current">0:00</span><span id="track-duration">—:—</span></div><input id="track-progress" type="range" min="0" max="100" step=".05" value="0" aria-label="Track playback position"></div></div><p id="track-unavailable" class="unavailable" hidden>RECORDING COMING SOON</p><a id="track-movie" class="text-button" href="#movie">Watch in visual mode <span>↗</span></a><div class="lyric-block"><p class="micro">WORDS / IN TIME</p><p id="track-lyric" class="active-lyric" aria-live="off"></p><p id="timing-note" class="timing-note"></p></div></div></div>
+      <nav class="track-pagination" aria-label="Previous and next track"><a id="previous-track"></a><span class="micro" id="track-count"></span><a id="next-track"></a></nav>
     </section>
+    <section id="movie-page" class="page movie-page" hidden aria-labelledby="movie-title">
+      <div class="movie-heading"><div><p class="micro">A DIFFERENT WAY TO LISTEN</p><h1 id="movie-title">Sound & picture.</h1></div><p id="movie-instruction">Choose a disc.<br>Make yourself at home.</p></div>
+      <div class="movie-layout"><nav id="movie-discs" aria-label="Choose a disc for the television"></nav><div id="movie-stage" class="stage movie-stage"><div class="tv-fallback"><div id="tv-fallback-screen"></div></div></div></div>
+      <div id="movie-selection-note" class="movie-selection-note"><span class="micro" id="movie-preview-number"></span><h2 id="movie-preview-title"></h2><p id="movie-preview-description"></p></div>
+      <div id="tv-hardware" class="tv-hardware" aria-label="TV controls"><button id="tv-insert" aria-label="Insert selected disc">⏵ INSERT</button><button id="tv-toggle" aria-label="Play or pause">▶ / Ⅱ</button><button id="tv-eject" aria-label="Eject disc">⏏ EJECT</button></div>
+      <div id="movie-controls" class="movie-controls" hidden><button id="eject" class="text-button">⏏ EJECT</button><div class="movie-playing-title"><span class="micro" id="movie-now-number"></span><span id="movie-now-title"></span></div><button id="movie-play" class="play-button">PAUSE</button><div class="timeline"><div class="time-row"><span id="movie-current">0:00</span><span id="movie-duration">—:—</span></div><input id="movie-progress" type="range" min="0" max="100" step=".05" value="0" aria-label="Movie playback position"></div><a id="movie-detail">TRACK NOTES ↗</a></div>
+      <p id="movie-accessible-lyric" class="movie-subtitle" aria-live="off"></p>
+    </section>
+    <section id="about-page" class="page about-page" hidden aria-labelledby="about-title"><div class="about-heading"><p class="micro">A NOTE FROM THE ARTIST</p><h1 id="about-title">Love leaves<br><em>something with us.</em></h1><p id="about-summary"></p></div><div id="about-sections"></div><a class="text-button" href="#album">Return to the album <span>↗</span></a></section>
   </main>
-  <p id="status" class="status" role="status" hidden></p>
-  <dialog id="info-dialog"><div class="dialog-top"><span class="eyebrow" id="info-kicker">ABOUT THE PROJECT</span><button id="close-info" aria-label="Close information">×</button></div><h2 id="info-title">Cycle of Love</h2><div id="info-body"></div><div class="dialog-foot">LOVE · MEMORY · CHANGE</div></dialog>
-  <audio id="audio" preload="metadata"></audio>
-  <noscript><div class="noscript">Please enable JavaScript to enter this music experience.</div></noscript>
-</body>
-</html>
+  <footer><span id="footer-title">CYCLE OF LOVE — PRUM</span><p id="footer-note"></p><span>WORK IN PROGRESS / THESIS PROTOTYPE</span></footer>
+  <p id="notice" role="status" hidden></p><audio id="audio" preload="metadata"></audio>
+  <noscript><p class="noscript">This album needs JavaScript for its interactive pages. <a href="audio/intro.m4a">Listen to INTRO</a> or <a href="audio/self.m4a">SELF</a>.</p></noscript>
+</body></html>
