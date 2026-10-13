@@ -82,10 +82,10 @@ export class AlbumStage {
     this.case.position.z=.5;
   }
   buildTV(){
-    const silver=this.material('#a9b2bb',{metalness:.78,roughness:.3}),plastic=this.material('#7f8993',{metalness:.35,roughness:.48}),dark=this.material('#313a38',{metalness:.1,roughness:.5});
+    const silver=this.material('#c4c5b6',{metalness:.72,roughness:.43}),plastic=this.material('#929585',{metalness:.48,roughness:.5}),dark=this.material('#20231b',{metalness:.2,roughness:.4});
     const brushing=document.createElement('canvas');brushing.width=256;brushing.height=256;const bc=brushing.getContext('2d');
     bc.fillStyle='#888';bc.fillRect(0,0,256,256);for(let y=0;y<256;y++){bc.fillStyle=`rgba(255,255,255,${.035+.025*Math.sin(y*23.73)})`;bc.fillRect(0,y,256,1);}
-    silver.bumpMap=new THREE.CanvasTexture(brushing);silver.bumpScale=.009;
+    silver.bumpMap=new THREE.CanvasTexture(brushing);silver.bumpScale=.006;plastic.bumpMap=silver.bumpMap;plastic.bumpScale=.004;
     const outline=new THREE.Shape();outline.moveTo(-2.31,-1.635);outline.lineTo(2.31,-1.635);outline.quadraticCurveTo(2.4,-1.635,2.4,-1.545);outline.lineTo(2.4,1.545);outline.quadraticCurveTo(2.4,1.635,2.31,1.635);outline.lineTo(-2.31,1.635);outline.quadraticCurveTo(-2.4,1.635,-2.4,1.545);outline.lineTo(-2.4,-1.545);outline.quadraticCurveTo(-2.4,-1.635,-2.31,-1.635);
     const shell=new THREE.Mesh(new THREE.ExtrudeGeometry(outline,{depth:1.37,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.065,bevelThickness:.065,curveSegments:8}),silver);shell.position.set(0,.3,-.685);this.tv.add(shell);
     this.box(this.tv,3.65,2.8,1.6,0,.3,-.9,plastic);
@@ -117,7 +117,7 @@ export class AlbumStage {
       this.tv.scale.set(1,1,1);
       if(this.screenCanvas.width!==960){this.screenCanvas.width=960;this.screenTexture.needsUpdate=true;}
     }
-    let h=this.mode==='album'?this.albumHeight(aspect):this.mode==='movie'?Math.max(4.5,5.15/aspect):4.1;
+    let h=this.mode==='album'?this.albumHeight(aspect):this.mode==='movie'?Math.max(5.6,5.8/aspect):4.1;
     this.camera.left=-h*aspect/2;this.camera.right=h*aspect/2;this.camera.top=h/2;this.camera.bottom=-h/2;this.camera.updateProjectionMatrix();
   }
   albumHeight(aspect){
@@ -250,14 +250,6 @@ export class AlbumStage {
     }
     if(this.mode==='movie'&&(!this.lastTV||now-this.lastTV>45)){this.drawTV(now);this.lastTV=now;}
     this.renderer.toneMappingExposure=this.mode==='movie'?.78:1.18;
-    if(this.mode==='movie'){
-      this.scene.updateMatrixWorld(true);this.camera.updateMatrixWorld(true);
-      const rect=this.canvas.getBoundingClientRect();
-      [['tv-insert',-1.65],['tv-toggle',.65],['tv-eject',1.65]].forEach(([id,x])=>{
-        const point=this.tv.localToWorld(new THREE.Vector3(x,-1.91,1.15)).project(this.camera);
-        const button=document.getElementById(id);if(button){button.style.left=`${rect.left+(point.x+1)*rect.width/2}px`;button.style.top=`${rect.top+(1-point.y)*rect.height/2}px`;}
-      });
-    }
     this.renderer.render(this.scene,this.camera);
   }
 }

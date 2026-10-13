@@ -41,12 +41,16 @@ body[data-page=movie] .movie-controls{position:absolute;bottom:8px;left:50%;tran
 body[data-page=movie] #eject,body[data-page=movie] #movie-play{display:none}
 body[data-page=movie] .movie-playing-title{min-width:90px;font-size:9px}
 body[data-page=movie] .movie-subtitle{position:absolute;left:0;right:0;bottom:50px;pointer-events:none;padding:0;font-size:10px}
-.tv-hardware button{position:fixed;z-index:6;transform:translate(-50%,-50%);font-size:9px;letter-spacing:.04em;min-width:55px;min-height:30px;padding:6px 9px;color:#263039;background:linear-gradient(#e1e6e9,#9ea8b0);border:1px solid #6d7780;border-radius:3px;box-shadow:0 2px 3px #101a2845,inset 0 1px 0 #fff9}
-.tv-hardware button:active:not(:disabled){box-shadow:inset 0 2px 3px #26303966}
-.tv-hardware button:disabled{opacity:.4}
-body:not(.has-3d) .tv-hardware{position:absolute;bottom:90px;left:0;right:0;display:flex;justify-content:center;gap:15px}
-body:not(.has-3d) .tv-hardware button{position:static;transform:none}
-@media(max-width:800px){body[data-page=movie] #movie-discs{top:8px;left:5%;width:90%;transform:none;display:grid;grid-template-columns:repeat(5,1fr);min-height:0;padding:6px;gap:5px}body[data-page=movie] .movie-disc{flex-direction:column;text-align:center}body[data-page=movie] .movie-disc img{width:36px;height:36px}body[data-page=movie] .movie-disc small{display:none}body[data-page=movie] .movie-controls .timeline{order:initial;flex-basis:auto}body[data-page=movie] .movie-controls{flex-wrap:nowrap}.tv-hardware button{font-size:7px;min-width:44px;min-height:28px;padding:4px}}
+/* Satin nickel keys seated together in a dark, recessed control rail. */
+.tv-hardware{position:absolute;bottom:78px;left:50%;transform:translateX(-50%);z-index:6;display:flex;gap:4px;padding:5px;border:1px solid #69685f;border-radius:10px;background:linear-gradient(#151612,#353630 65%,#10110e);box-shadow:0 2px 1px #f9f8eea6,inset 0 1px 2px #000,0 8px 12px #27271e40}
+.tv-hardware button{position:relative;display:grid;place-items:center;width:94px;height:48px;padding:0;border:1px solid #b8b9ad;border-radius:7px;color:#141611;background:repeating-linear-gradient(90deg,#ffffff08 0 1px,#30382b06 1px 2px,transparent 2px 4px),linear-gradient(110deg,#d8d9cd,#adafa2 45%,#c7c9bd 72%,#dadbd0);box-shadow:inset 0 2px 2px #fffff5db,inset 2px 0 2px #f7f9e9a6,inset -2px -3px 3px #5e625678,0 2px 2px #000c;transition:filter .15s,box-shadow .15s}
+.tv-hardware button svg{width:23px;height:23px;fill:currentColor;filter:drop-shadow(0 1px 1px #ffffef66)}
+.tv-hardware button:hover:not(:disabled){filter:brightness(1.08)}
+.tv-hardware button:active:not(:disabled),.tv-hardware button.is-playing{background:repeating-linear-gradient(90deg,#ffffff05 0 1px,transparent 1px 3px),linear-gradient(#7c8072,#b5b9a9 65%,#c5c9b9);box-shadow:inset 0 4px 8px #24271ccc,inset 2px 0 4px #34372a99,inset 0 -1px 1px #f5f7e699}
+.tv-hardware button:disabled{opacity:1;color:#54574b;filter:contrast(.75)}
+.tv-hardware button:focus-visible{outline:2px solid #fffdf0;outline-offset:3px}
+.tv-pause-icon{display:none}.is-playing .tv-pause-icon{display:block}.is-playing .tv-play-icon{display:none}
+@media(max-width:800px){body[data-page=movie] #movie-discs{top:8px;left:5%;width:90%;transform:none;display:grid;grid-template-columns:repeat(5,1fr);min-height:0;padding:6px;gap:5px}body[data-page=movie] .movie-disc{flex-direction:column;text-align:center}body[data-page=movie] .movie-disc img{width:36px;height:36px}body[data-page=movie] .movie-disc small{display:none}body[data-page=movie] .movie-controls .timeline{order:initial;flex-basis:auto}body[data-page=movie] .movie-controls{flex-wrap:nowrap}.tv-hardware{bottom:80px;gap:3px;padding:4px}.tv-hardware button{width:74px;height:44px}}
 
 /* Keep the disc selector compact over the enlarged screen. */
 body[data-page=movie] #movie-discs{left:14px;width:110px;padding:7px;background:#e3e6e899}
@@ -63,8 +67,6 @@ body[data-page=movie] .movie-disc small{font-size:5px}
 #lyric-sections p{white-space:pre-line;font-size:clamp(14px,1.2vw,18px);line-height:1.9;overflow-wrap:break-word}
 @media(max-width:650px){.full-lyrics{padding:30px 0 40px}#lyric-sections{grid-template-columns:1fr;row-gap:30px}}
 
-/* Leave breathing room between the television and its hardware controls. */
-body.has-3d .tv-hardware button{margin-top:32px}
 .video-fullscreen{position:absolute;right:24px;top:18px;z-index:6;padding:12px;background:#e3e6e8db;font-size:10px}
 .video-fullscreen:disabled{opacity:.4;cursor:default}
 #fullscreen-view{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#000;color:#fff;overflow:hidden}
@@ -74,9 +76,13 @@ body.has-3d .tv-hardware button{margin-top:32px}
 .fullscreen-actions button{position:absolute;display:grid;place-items:center;width:44px;height:44px;padding:0;background:#202020cc;color:#fff;border:1px solid #ffffff70;border-radius:4px;font-size:20px;line-height:1;pointer-events:auto}
 #fullscreen-close{top:max(24px,env(safe-area-inset-top));right:max(24px,env(safe-area-inset-right))}
 #fullscreen-play{bottom:max(24px,env(safe-area-inset-bottom));left:max(24px,env(safe-area-inset-left))}
-@media(max-width:800px){body.has-3d .tv-hardware button{margin-top:24px}.video-fullscreen{top:100px;right:16px}}
+@media(max-width:800px){.video-fullscreen{top:100px;right:16px}}
 
 #track-description p{white-space:pre-line}
 #track-description p+p{margin-top:1.4em}
 #track-description h2{font-size:12px;letter-spacing:.14em;font-weight:600;margin:2.5em 0 1.2em}
 #track-description h2:first-child{margin-top:0}
+
+body[data-page=movie]{background:#dedbd3}
+body[data-page=movie] .movie-controls{background:#dedbd3e6}
+.tv-fallback{border-color:#bfc1b2;box-shadow:inset 0 0 0 3px #262820,20px 30px 30px #333b3020}

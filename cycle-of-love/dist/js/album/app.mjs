@@ -131,6 +131,9 @@ function updatePlayer(){
     if(Number.isFinite(video.duration)&&video.duration>0){const target=video.loop?audio.currentTime%video.duration:Math.min(audio.currentTime,video.duration);if(Math.abs(video.currentTime-target)>.4)video.currentTime=target;}
     if(audio.paused)video.pause();else if(video.paused)video.play().catch(()=>{});
   }
+  $('tv-toggle').classList.toggle('is-playing',!audio.paused);
+  $('tv-toggle').setAttribute('aria-label',audio.paused?'Play':'Pause');
+  $('tv-toggle').title=audio.paused?'Play':'Pause';
   text('fullscreen-play',audio.paused?'▶':'Ⅱ');
   $('fullscreen-play').setAttribute('aria-label',audio.paused?'Play':'Pause');
   const t=tracks[current],duration=Number.isFinite(audio.duration)?audio.duration:t.duration;

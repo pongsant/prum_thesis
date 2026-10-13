@@ -30,7 +30,11 @@
       <div class="movie-layout"><nav id="movie-discs" aria-label="Choose a disc for the television"></nav><div id="movie-stage" class="stage movie-stage"><div class="tv-fallback"><div id="tv-fallback-screen"></div></div></div></div>
       <div id="movie-selection-note" class="movie-selection-note"><span class="micro" id="movie-preview-number"></span><h2 id="movie-preview-title"></h2><p id="movie-preview-description"></p></div>
       <button id="video-fullscreen" class="text-button video-fullscreen" disabled aria-label="Watch video fullscreen">⛶ FULLSCREEN</button>
-      <div id="tv-hardware" class="tv-hardware" aria-label="TV controls"><button id="tv-insert" aria-label="Insert selected disc">⏵ INSERT</button><button id="tv-toggle" aria-label="Play or pause">▶ / Ⅱ</button><button id="tv-eject" aria-label="Eject disc">⏏ EJECT</button></div>
+      <div id="tv-hardware" class="tv-hardware" role="group" aria-label="TV controls">
+        <button id="tv-insert" aria-label="Insert selected disc" title="Insert selected disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h14v3H5zM10 8h4v7h4l-6 6-6-6h4z"/></svg></button>
+        <button id="tv-toggle" aria-label="Play" title="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="tv-play-icon" d="M6 3v18l15-9z"/><path class="tv-pause-icon" d="M5 4h5v16H5zM14 4h5v16h-5z"/></svg></button>
+        <button id="tv-eject" aria-label="Eject disc" title="Eject disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 12H3zM3 18h18v3H3z"/></svg></button>
+      </div>
       <div id="movie-controls" class="movie-controls" hidden><button id="eject" class="text-button">⏏ EJECT</button><div class="movie-playing-title"><span class="micro" id="movie-now-number"></span><span id="movie-now-title"></span></div><button id="movie-play" class="play-button">PAUSE</button><div class="timeline"><div class="time-row"><span id="movie-current">0:00</span><span id="movie-duration">—:—</span></div><input id="movie-progress" type="range" min="0" max="100" step=".05" value="0" aria-label="Movie playback position"></div><a id="movie-detail">TRACK NOTES ↗</a></div>
       <p id="movie-accessible-lyric" class="movie-subtitle" aria-live="off"></p>
     </section>
