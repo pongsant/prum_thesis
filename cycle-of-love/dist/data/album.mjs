@@ -24,7 +24,7 @@ export const tracks = [
    audio:'audio/intro.m4a',duration:76.615,cover:null,
    description:'Opening atmosphere and introduction to the project.',
    concept:'A little space to arrive, before the words begin.',
-   lyrics:[],instrumental:true,movie:null,
+   lyrics:[],instrumental:true,movie:{type:'video',src:'video/intro.mp4',loop:true,showLyrics:false},
    visualTheme:{background:'#77807b',ink:'#e5e7db',accent:'#b8b4a4',idleText:'Before the words.'}},
   {id:'self',number:'02',title:'SELF',status:'available',discLabel:'SELF',
    audio:'audio/self.m4a',duration:196,cover:null,

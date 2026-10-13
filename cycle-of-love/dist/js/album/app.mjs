@@ -8,7 +8,7 @@ const thumbs=tracks.map(t=>discCanvas(t,320).toDataURL());
 const pages=['album','track','movie','about'];
 function text(id,value){if($(id).textContent!==value)$(id).textContent=value;}
 function notice(message){clearTimeout(noticeTimer);text('notice',message);$('notice').hidden=false;noticeTimer=setTimeout(()=>$('notice').hidden=true,6500);}
-function stop(){operation++;audio.pause();audio.volume=1;stage?.cancel();stage?.loadMedia(null);}
+function stop(){closeFullscreen();operation++;audio.pause();audio.volume=1;stage?.cancel();stage?.loadMedia(null);}
 function load(index){
   current=index;
   if(loaded===index)return;
@@ -56,6 +56,7 @@ function movieUI(){
   const selecting=movieState==='selection',busy=['inserting','ejecting'].includes(movieState);
   document.body.dataset.movieState=movieState;$('movie-discs').inert=!selecting;$('movie-discs').setAttribute('aria-hidden',String(!selecting));$('movie-controls').hidden=selecting;$('movie-selection-note').hidden=!selecting;
   $('tv-insert').disabled=!selecting;$('tv-eject').disabled=selecting||busy;$('tv-toggle').disabled=selecting||busy||!available(tracks[current]);
+  $('video-fullscreen').disabled=selecting||busy||tracks[current].movie?.type!=='video';
   $('eject').disabled=busy;text('eject',movieState==='inserting'?'READING DISC…':movieState==='ejecting'?'EJECTING…':'⏏ EJECT');
   text('movie-instruction',selecting?'Choose a disc.\nMake yourself at home.':'A moment, just for listening.');
   text('movie-now-number',`DISC ${tracks[current].number}`);text('movie-now-title',tracks[current].title);$('movie-detail').href=`#track/${tracks[current].id}`;
@@ -76,6 +77,7 @@ async function insert(index){
 }
 async function eject(){
   if(movieState!=='playing')return;
+  closeFullscreen();
   const token=++operation;audio.pause();movieState='ejecting';movieUI();stage?.loadMedia(null);
   const finished=stage?await stage.animate('eject',current):await new Promise(r=>setTimeout(()=>r(true),450));
   if(token!==operation||!finished)return;
@@ -92,7 +94,32 @@ function navigate(){
   document.title=route.page==='track'?`${tracks[route.index].title} — ${project.title}`:`${project.title} — ${route.page==='movie'?'Sound & picture':project.artist}`;
   window.scrollTo({top:0,behavior:'instant'});
 }
+function closeFullscreen(){
+  const view=$('fullscreen-view');
+  if(document.fullscreenElement===view)document.exitFullscreen().catch(()=>{});
+  if(view.open)view.close();
+  $('fullscreen-media').replaceChildren();
+}
+async function openFullscreen(){
+  const video=stage?.media;
+  if(movieState!=='playing'||video?.tagName!=='VIDEO')return;
+  $('fullscreen-media').append(video);
+  $('fullscreen-view').showModal();
+  updatePlayer();
+  try{await $('fullscreen-view').requestFullscreen?.();}catch{/* The dialog still fills the browser viewport. */}
+}
+$('video-fullscreen').addEventListener('click',openFullscreen);
+$('fullscreen-close').addEventListener('click',closeFullscreen);
+$('fullscreen-view').addEventListener('cancel',event=>{event.preventDefault();closeFullscreen();});
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&$('fullscreen-view').open)closeFullscreen();});
+$('fullscreen-play').addEventListener('click',playPause);
 function updatePlayer(){
+  const video=stage?.media;
+  if(video?.tagName==='VIDEO'){
+    if(Number.isFinite(video.duration)&&video.duration>0){const target=video.loop?audio.currentTime%video.duration:Math.min(audio.currentTime,video.duration);if(Math.abs(video.currentTime-target)>.4)video.currentTime=target;}
+    if(audio.paused)video.pause();else if(video.paused)video.play().catch(()=>{});
+  }
+  text('fullscreen-play',audio.paused?'PLAY ▶':'PAUSE Ⅱ');
   const t=tracks[current],duration=Number.isFinite(audio.duration)?audio.duration:t.duration;
   const time=loaded===current&&available(t)?audio.currentTime:0;
   for(const prefix of ['track','movie']){
@@ -125,7 +152,7 @@ $('open-case').addEventListener('click',()=>setOpen(!opened));$('track-play').ad
 for(const prefix of ['track','movie'])$(prefix+'-progress').addEventListener('input',e=>{if(Number.isFinite(audio.duration)&&available(tracks[current])){audio.currentTime=Number(e.target.value)/100*audio.duration;updatePlayer();}});
 ['timeupdate','seeked','loadedmetadata','durationchange','play','pause','ended'].forEach(event=>audio.addEventListener(event,updatePlayer));
 audio.addEventListener('error',()=>{if(audio.hasAttribute('src'))notice('The recording could not load. Check the audio path in data/album.mjs.');});
-addEventListener('hashchange',navigate);addEventListener('keydown',event=>{if(event.metaKey||event.ctrlKey||event.altKey||['INPUT','TEXTAREA','BUTTON','A'].includes(document.activeElement.tagName))return;if(event.code==='Space'&&(route.page==='track'||route.page==='movie'&&movieState==='playing')){event.preventDefault();playPause();}if(event.key==='Escape'&&route.page==='movie'&&movieState==='playing')eject();});
+addEventListener('hashchange',navigate);addEventListener('keydown',event=>{if($('fullscreen-view').open||event.defaultPrevented)return;if(event.metaKey||event.ctrlKey||event.altKey||['INPUT','TEXTAREA','BUTTON','A'].includes(document.activeElement.tagName))return;if(event.code==='Space'&&(route.page==='track'||route.page==='movie'&&movieState==='playing')){event.preventDefault();playPause();}if(event.key==='Escape'&&route.page==='movie'&&movieState==='playing')eject();});
 navigate();
 // The renderer loads after the functional pages and audio controls are available.
 import('./stage.mjs').then(({AlbumStage})=>{

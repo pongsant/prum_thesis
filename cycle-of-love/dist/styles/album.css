@@ -62,3 +62,14 @@ body[data-page=movie] .movie-disc small{font-size:5px}
 #lyric-sections h3{font-size:10px;font-weight:400;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 16px}
 #lyric-sections p{white-space:pre-line;font-size:clamp(14px,1.2vw,18px);line-height:1.9;overflow-wrap:break-word}
 @media(max-width:650px){.full-lyrics{padding:30px 0 40px}#lyric-sections{grid-template-columns:1fr;row-gap:30px}}
+
+/* Leave breathing room between the television and its hardware controls. */
+body.has-3d .tv-hardware button{margin-top:32px}
+.video-fullscreen{position:absolute;right:24px;top:18px;z-index:6;padding:12px;background:#e3e6e8db;font-size:10px}
+.video-fullscreen:disabled{opacity:.4;cursor:default}
+#fullscreen-view{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#000;color:#fff;overflow:hidden}
+#fullscreen-view::backdrop{background:#000}
+#fullscreen-media,#fullscreen-media video{width:100%;height:100%;object-fit:contain}
+.fullscreen-actions{position:absolute;bottom:max(24px,env(safe-area-inset-bottom));left:0;right:0;display:flex;justify-content:center;gap:16px}
+.fullscreen-actions button{padding:12px 18px;background:#202020cc;color:#fff;border:1px solid #ffffff70;border-radius:4px;font-size:12px}
+@media(max-width:800px){body.has-3d .tv-hardware button{margin-top:24px}.video-fullscreen{top:100px;right:16px}}

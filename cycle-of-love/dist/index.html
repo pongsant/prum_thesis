@@ -29,12 +29,14 @@
       <div class="movie-heading"><div><p class="micro">A DIFFERENT WAY TO LISTEN</p><h1 id="movie-title">Sound & picture.</h1></div><p id="movie-instruction">Choose a disc.<br>Make yourself at home.</p></div>
       <div class="movie-layout"><nav id="movie-discs" aria-label="Choose a disc for the television"></nav><div id="movie-stage" class="stage movie-stage"><div class="tv-fallback"><div id="tv-fallback-screen"></div></div></div></div>
       <div id="movie-selection-note" class="movie-selection-note"><span class="micro" id="movie-preview-number"></span><h2 id="movie-preview-title"></h2><p id="movie-preview-description"></p></div>
+      <button id="video-fullscreen" class="text-button video-fullscreen" disabled aria-label="Watch video fullscreen">⛶ FULLSCREEN</button>
       <div id="tv-hardware" class="tv-hardware" aria-label="TV controls"><button id="tv-insert" aria-label="Insert selected disc">⏵ INSERT</button><button id="tv-toggle" aria-label="Play or pause">▶ / Ⅱ</button><button id="tv-eject" aria-label="Eject disc">⏏ EJECT</button></div>
       <div id="movie-controls" class="movie-controls" hidden><button id="eject" class="text-button">⏏ EJECT</button><div class="movie-playing-title"><span class="micro" id="movie-now-number"></span><span id="movie-now-title"></span></div><button id="movie-play" class="play-button">PAUSE</button><div class="timeline"><div class="time-row"><span id="movie-current">0:00</span><span id="movie-duration">—:—</span></div><input id="movie-progress" type="range" min="0" max="100" step=".05" value="0" aria-label="Movie playback position"></div><a id="movie-detail">TRACK NOTES ↗</a></div>
       <p id="movie-accessible-lyric" class="movie-subtitle" aria-live="off"></p>
     </section>
     <section id="about-page" class="page about-page" hidden aria-labelledby="about-title"><div class="about-heading"><p class="micro">A NOTE FROM THE ARTIST</p><h1 id="about-title">Love leaves<br><em>something with us.</em></h1><p id="about-summary"></p></div><div id="about-sections"></div><a class="text-button" href="#album">Return to the album <span>↗</span></a></section>
   </main>
+  <dialog id="fullscreen-view" aria-label="Fullscreen video"><div id="fullscreen-media"></div><div class="fullscreen-actions"><button id="fullscreen-play">PLAY / PAUSE</button><button id="fullscreen-close" autofocus>✕ CLOSE</button></div></dialog>
   <footer><span id="footer-title">CYCLE OF LOVE — PRUM</span><p id="footer-note"></p><span>WORK IN PROGRESS / THESIS PROTOTYPE</span></footer>
   <p id="notice" role="status" hidden></p><audio id="audio" preload="metadata"></audio>
   <noscript><p class="noscript">This album needs JavaScript for its interactive pages. <a href="audio/intro.m4a">Listen to INTRO</a> or <a href="audio/self.m4a">SELF</a>.</p></noscript>
