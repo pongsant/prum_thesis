@@ -7,6 +7,18 @@ let route=parseRoute(location.hash,tracks),stage=null,current=0,loaded=-1,opened
 const thumbs=tracks.map(t=>discCanvas(t,320).toDataURL());
 const pages=['album','track','movie','about'];
 function text(id,value){if($(id).textContent!==value)$(id).textContent=value;}
+function descriptionPreview(track){return (track.description.split('\n\n').find(part=>!part.startsWith('## '))||'').replaceAll('**','');}
+function renderDescription(value){
+  $('track-description').replaceChildren(...value.split('\n\n').map(block=>{
+    const heading=block.startsWith('## '),element=document.createElement(heading?'h2':'p');
+    const value=heading?block.slice(3):block;
+    element.append(...value.split(/(\*\*.*?\*\*)/g).map(part=>{
+      if(part.startsWith('**')&&part.endsWith('**')){const strong=document.createElement('strong');strong.textContent=part.slice(2,-2);return strong;}
+      return document.createTextNode(part);
+    }));
+    return element;
+  }));
+}
 function notice(message){clearTimeout(noticeTimer);text('notice',message);$('notice').hidden=false;noticeTimer=setTimeout(()=>$('notice').hidden=true,6500);}
 function stop(){closeFullscreen();operation++;audio.pause();audio.volume=1;stage?.cancel();stage?.loadMedia(null);}
 function load(index){
@@ -28,17 +40,17 @@ function artwork(image,track){
 }
 function setOpen(value){opened=value;$('open-case').setAttribute('aria-expanded',String(opened));$('track-list').inert=!opened;document.body.classList.toggle('album-open',opened);stage?.setOpen(opened);$('open-case').firstChild.textContent=opened?'Close the album ':'Open the album ';text('case-hint',opened?'SELECT A DISC TO LISTEN':'CLICK THE CASE TO OPEN');}
 function previewAlbum(i){
-  const t=tracks[i];$('disc-preview').replaceChildren();const small=document.createElement('span');small.className='micro';small.textContent=`${t.number} / ${t.title} — ${available(t)?'AVAILABLE':'COMING SOON'}`;const p=document.createElement('p');p.textContent=t.description;$('disc-preview').append(small,p);
+  const t=tracks[i];$('disc-preview').replaceChildren();const small=document.createElement('span');small.className='micro';small.textContent=`${t.number} / ${t.title} — ${available(t)?'AVAILABLE':'COMING SOON'}`;const p=document.createElement('p');p.textContent=descriptionPreview(t);$('disc-preview').append(small,p);
   document.querySelectorAll('.track-link').forEach((a,j)=>a.classList.toggle('hovered',j===i));
 }
 function previewMovie(i){
   if(movieState!=='selection')return;preview=i;stage?.setPreview(i);
-  text('movie-preview-number',`DISC ${tracks[i].number} / ${available(tracks[i])?'AVAILABLE':'COMING SOON'}`);text('movie-preview-title',tracks[i].title);text('movie-preview-description',tracks[i].description);
+  text('movie-preview-number',`DISC ${tracks[i].number} / ${available(tracks[i])?'AVAILABLE':'COMING SOON'}`);text('movie-preview-title',tracks[i].title);text('movie-preview-description',descriptionPreview(tracks[i]));
   document.querySelectorAll('.movie-disc').forEach((b,j)=>b.setAttribute('aria-current',String(i===j)));
   text('tv-fallback-screen',tracks[i].title);
 }
 function renderTrack(index){
-  const t=tracks[index];load(index);text('track-status',available(t)?'AVAILABLE TO LISTEN':'COMING SOON');text('track-number',`TRACK ${t.number}`);text('art-number',t.number);text('track-title',t.title);text('track-description',t.description);text('track-concept',t.concept);text('timing-note',t.timingNote||'');text('track-count',`${t.number} / 05`);
+  const t=tracks[index];load(index);text('track-status',available(t)?'AVAILABLE TO LISTEN':'COMING SOON');text('track-number',`TRACK ${t.number}`);text('art-number',t.number);text('track-title',t.title);renderDescription(t.description);text('track-concept',t.concept);$('track-concept').hidden=!t.concept;text('timing-note',t.timingNote||'');text('track-count',`${t.number} / 05`);
   $('track-player').hidden=!available(t);$('track-unavailable').hidden=available(t);$('track-movie').href=`#movie/${t.id}`;
   $('full-lyrics').hidden=!t.lyricSections?.length;
   text('full-lyrics-heading',`${t.title} / LYRICS`);
@@ -119,7 +131,8 @@ function updatePlayer(){
     if(Number.isFinite(video.duration)&&video.duration>0){const target=video.loop?audio.currentTime%video.duration:Math.min(audio.currentTime,video.duration);if(Math.abs(video.currentTime-target)>.4)video.currentTime=target;}
     if(audio.paused)video.pause();else if(video.paused)video.play().catch(()=>{});
   }
-  text('fullscreen-play',audio.paused?'PLAY ▶':'PAUSE Ⅱ');
+  text('fullscreen-play',audio.paused?'▶':'Ⅱ');
+  $('fullscreen-play').setAttribute('aria-label',audio.paused?'Play':'Pause');
   const t=tracks[current],duration=Number.isFinite(audio.duration)?audio.duration:t.duration;
   const time=loaded===current&&available(t)?audio.currentTime:0;
   for(const prefix of ['track','movie']){
