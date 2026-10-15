@@ -1,11 +1,13 @@
 import {project,tracks} from '../../data/album.mjs';
 import {discCanvas,coverCanvas} from './art.mjs';
+import {initParticleDisc} from './particle-disc.mjs';
 import {formatTime,lyricAt,available,parseRoute} from './core.mjs';
 
 const $=id=>document.getElementById(id),audio=$('audio'),player=new window.MusicPlayer(audio);
-let route=parseRoute(location.hash,tracks),stage=null,current=0,loaded=-1,opened=false,movieState='selection',preview=0,operation=0,noticeTimer;
+let route=parseRoute(location.hash,tracks),stage=null,current=0,loaded=-1,movieState='selection',preview=0,operation=0,noticeTimer;
 const thumbs=tracks.map(t=>discCanvas(t,320).toDataURL());
 const pages=['album','track','movie','about'];
+initParticleDisc(tracks);
 function text(id,value){if($(id).textContent!==value)$(id).textContent=value;}
 function descriptionPreview(track){return (track.description.split('\n\n').find(part=>!part.startsWith('## '))||'').replaceAll('**','');}
 function renderDescription(value){
@@ -37,11 +39,6 @@ async function playPause(){
 }
 function artwork(image,track){
   const fallback=coverCanvas(project,track).toDataURL();image.onerror=()=>{image.onerror=null;image.src=fallback;};image.src=track.cover||fallback;image.alt=`${track.title} cover artwork`;
-}
-function setOpen(value){opened=value;$('open-case').setAttribute('aria-expanded',String(opened));$('track-list').inert=!opened;document.body.classList.toggle('album-open',opened);stage?.setOpen(opened);$('open-case').firstChild.textContent=opened?'Close the album ':'Open the album ';text('case-hint',opened?'SELECT A DISC TO LISTEN':'CLICK THE CASE TO OPEN');}
-function previewAlbum(i){
-  const t=tracks[i];$('disc-preview').replaceChildren();const small=document.createElement('span');small.className='micro';small.textContent=`${t.number} / ${t.title} — ${available(t)?'AVAILABLE':'COMING SOON'}`;const p=document.createElement('p');p.textContent=descriptionPreview(t);$('disc-preview').append(small,p);
-  document.querySelectorAll('.track-link').forEach((a,j)=>a.classList.toggle('hovered',j===i));
 }
 function previewMovie(i){
   if(movieState!=='selection')return;preview=i;stage?.setPreview(i);
@@ -102,7 +99,7 @@ function navigate(){
   document.querySelectorAll('[data-nav]').forEach(a=>{const active=a.dataset.nav===(route.page==='track'?'album':route.page);if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
   if(route.page==='track')renderTrack(route.index);
   if(route.page==='movie'){current=route.index;movieUI();previewMovie(route.index);}
-  if(stage&&route.page!=='about'){stage.mount($(route.page+'-stage'),route.page);if(route.page==='album')stage.setOpen(opened);if(route.page==='movie')stage.setPreview(route.index);}
+  if(stage&&['track','movie'].includes(route.page)){stage.mount($(route.page+'-stage'),route.page);if(route.page==='movie')stage.setPreview(route.index);}
   document.title=route.page==='track'?`${tracks[route.index].title} — ${project.title}`:`${project.title} — ${route.page==='movie'?'Sound & picture':project.artist}`;
   window.scrollTo({top:0,behavior:'instant'});
 }
@@ -154,17 +151,19 @@ function updatePlayer(){
 
 // Build data-driven navigation once. All five tracks are always reachable.
 tracks.forEach((t,i)=>{
-  const a=document.createElement('a');a.href=`#track/${t.id}`;a.className='track-link';a.setAttribute('aria-label',`${t.number} ${t.title}, ${available(t)?'available':'coming soon'}`);
-  const img=document.createElement('img');img.src=thumbs[i];img.alt='';const number=document.createElement('span');number.className='micro';number.textContent=t.number;const name=document.createElement('strong');name.textContent=t.title;const state=document.createElement('small');state.textContent=available(t)?'LISTEN ↗':'COMING SOON';a.append(img,number,name,state);a.addEventListener('pointerenter',()=>{previewAlbum(i);if(stage)stage.hover=i;});a.addEventListener('focus',()=>previewAlbum(i));a.addEventListener('pointerleave',()=>{if(stage)stage.hover=-1;});$('track-list').append(a);
   const b=document.createElement('button');b.className='movie-disc';b.setAttribute('aria-label',`Insert ${t.title}${available(t)?'':', coming soon'}`);const disc=document.createElement('img');disc.src=thumbs[i];disc.alt='';const label=document.createElement('span');const title=document.createElement('strong');title.textContent=`${t.number} / ${t.title}`;const status=document.createElement('small');status.textContent=available(t)?'INSERT DISC ↗':'COMING SOON';label.append(title,status);b.append(disc,label);b.addEventListener('pointerenter',()=>previewMovie(i));b.addEventListener('focus',()=>previewMovie(i));b.addEventListener('click',()=>insert(i));$('movie-discs').append(b);
 });
 $('wordmark').firstChild.textContent=project.title.toUpperCase();$('wordmark').lastChild.textContent='BY '+project.artist.toUpperCase();text('edition',project.edition.toUpperCase());
-$('album-title').replaceChildren();project.statement.split('\n').forEach((line,i)=>{if(i)$('album-title').append(document.createElement('br'));const span=document.createElement(i?'em':'span');span.textContent=line;$('album-title').append(span);});text('album-description',project.description);text('about-summary',project.description);text('footer-title',`${project.title.toUpperCase()} — ${project.artist.toUpperCase()}`);text('footer-note',project.footer);
+text('about-summary',project.description);text('footer-title',`${project.title.toUpperCase()} — ${project.artist.toUpperCase()}`);text('footer-note',project.footer);
 project.about.forEach((section,i)=>{const row=document.createElement('section');const number=document.createElement('span');number.className='micro';number.textContent=String(i+1).padStart(2,'0');const heading=document.createElement('h2');heading.textContent=section.title;const p=document.createElement('p');p.textContent=section.text;row.append(number,heading,p);$('about-sections').append(row);});
-$('track-list').inert=true;
-$('album-stage').addEventListener('click',()=>{if(!stage)setOpen(!opened);});
+$('motion-toggle').addEventListener('click',()=>{
+  const paused=document.body.classList.toggle('motion-paused');
+  $('motion-toggle').setAttribute('aria-pressed',String(paused));
+  $('motion-toggle').setAttribute('aria-label',paused?'Resume background and artwork animation':'Pause background and artwork animation');
+  text('motion-toggle',paused?'▶ RESUME MOTION':'Ⅱ PAUSE MOTION');
+});
 $('tv-insert').addEventListener('click',()=>insert(preview));$('tv-eject').addEventListener('click',eject);$('tv-toggle').addEventListener('click',playPause);
-$('open-case').addEventListener('click',()=>setOpen(!opened));$('track-play').addEventListener('click',playPause);$('movie-play').addEventListener('click',playPause);$('eject').addEventListener('click',eject);
+$('track-play').addEventListener('click',playPause);$('movie-play').addEventListener('click',playPause);$('eject').addEventListener('click',eject);
 for(const prefix of ['track','movie'])$(prefix+'-progress').addEventListener('input',e=>{if(Number.isFinite(audio.duration)&&available(tracks[current])){audio.currentTime=Number(e.target.value)/100*audio.duration;updatePlayer();}});
 ['timeupdate','seeked','loadedmetadata','durationchange','play','pause','ended'].forEach(event=>audio.addEventListener(event,updatePlayer));
 audio.addEventListener('error',()=>{if(audio.hasAttribute('src'))notice('The recording could not load. Check the audio path in data/album.mjs.');});
@@ -172,9 +171,9 @@ addEventListener('hashchange',navigate);addEventListener('keydown',event=>{if($(
 navigate();
 // The renderer loads after the functional pages and audio controls are available.
 import('./stage.mjs').then(({AlbumStage})=>{
-  stage=new AlbumStage({project,tracks,onOpen:()=>setOpen(!opened),onSelect:i=>location.hash=`track/${tracks[i].id}`,onHover:previewAlbum,onError:notice});
+  stage=new AlbumStage({project,tracks,onOpen:()=>{},onSelect:i=>location.hash=`track/${tracks[i].id}`,onHover:()=>{},onError:notice});
   document.body.classList.add('has-3d');
-  if(route.page!=='about'){stage.mount($(route.page+'-stage'),route.page);if(route.page==='track')stage.setTrack(route.index);if(route.page==='movie')stage.setPreview(preview);stage.setOpen(opened);}
+  if(['track','movie'].includes(route.page)){stage.mount($(route.page+'-stage'),route.page);if(route.page==='track')stage.setTrack(route.index);if(route.page==='movie')stage.setPreview(preview);}
 }).catch(error=>{console.warn('3D unavailable',error);notice('3D is unavailable here. You can still explore all five tracks and use the audio and visual controls.');});
 function react(){
   requestAnimationFrame(react);if(!stage||route.page!=='movie'||document.hidden)return;
