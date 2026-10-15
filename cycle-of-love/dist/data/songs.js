@@ -4,7 +4,7 @@
    MP4/WebM backgrounds are silent loops. Music comes only from audio below. */
 window.PROJECT = { title: 'Cycle of Love', artist: 'Prum' };
 window.SONGS = [
-  { id: 'intro', number: '00', title: 'INTRO', available: true,
+  { id: 'intro', number: '00', title: 'BEGINNING', available: true,
     audio: 'audio/intro.m4a', duration: 76.615, lyrics: [],
     subtitle: 'Before the words.', mood: 'A MOMENT BEFORE EVERYTHING',
     description: 'An instrumental opening. A little space to arrive, slow down, and let the outside world fall away.',

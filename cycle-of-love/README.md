@@ -10,11 +10,11 @@ Run `python3 serve.py` here and open http://localhost:4173. Use HTTP rather than
 
 Start with **`dist/data/album.mjs`**. It contains the project title, cover title, introduction, About sections, and all five tracks. Each track defines its title, number, handwritten disc label, status, description, concept, audio path, cover path, lyrics, movie media, and visual palette.
 
-- INTRO and SELF reuse the existing M4A recordings, unchanged.
+- BEGINNING and SELF reuse the existing M4A recordings, unchanged.
 - FAMILY, FUTURE LOVE, and LETTING GO have complete pages and visual experiences marked coming soon. To enable one, add its audio file and change `status` to `available`.
 - Set `project.cover` or a track's `cover` to an image path, such as `images/self-cover.jpg`. Leave `null` to use generated placeholder artwork.
 - SELF references the preserved cue sheet in `dist/data/lyrics.js`. You can instead put `{ time: 12, text: 'Your lyric' }` objects directly in its `lyrics` field. Optional `end` and `emphasis` fields are supported. Times are seconds. The existing timings are drafts and need final vocal alignment.
-- INTRO is instrumental; it does not invent lyric lines.
+- BEGINNING is instrumental; it does not invent lyric lines.
 - Set `movie` to `{ type: 'video', src: 'video/self.mp4', loop: true, showLyrics: true }` for a silent MP4/WebM visual, or `{ type: 'image', src: 'images/self.jpg' }` for a still. Use `showLyrics: false` for a video with its own titles. Only the selected visual loads. Background video loops independently of the audio timeline.
 - All media paths are relative to `dist/`. Keep videos compressed and reasonably sized for mobile.
 
@@ -42,6 +42,6 @@ Space toggles playback when focus is outside a control. Escape ejects during vis
 
 ## Preservation and verification
 
-The previous walkable prototype remains at `/room-prototype.html` with its supporting source files. The new homepage does not load those scripts. The original INTRO/SELF recordings, lyrics, and audio logic were checked against their pre-rebuild checksums.
+The previous walkable prototype remains at `/room-prototype.html` with its supporting source files. The new homepage does not load those scripts. The original BEGINNING/SELF recordings, lyrics, and audio logic were checked against their pre-rebuild checksums.
 
 Run `node --test tests/album.test.mjs`. Safari desktop checks cover case opening, track navigation, real audio playback, seeking and timed lyrics, CRT insertion, and eject. Responsive CSS includes compact phone layouts; physical-device testing is still recommended.
